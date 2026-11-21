@@ -1,0 +1,110 @@
+@startuml
+title Matlodge - Domain Model
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 55
+skinparam ranksep 55
+hide empty members
+
+class Material {
+  formulation : String
+}
+
+class Sample {
+  /id : String
+  number : int
+  pcmThickness : Decimal
+}
+
+class Source {
+  doi : String
+  title : String
+}
+
+class RefractiveIndexDataset {
+  hasFittingParameters : Boolean
+}
+
+class OpticalDataPoint {
+  lambda : Decimal
+  n : Decimal
+  k : Decimal
+}
+
+enum Phase {
+  AMORPHOUS
+  CRYSTALLINE
+}
+
+enum DataExtractionMethod {
+  SUPPLEMENTARY_MATERIAL
+  DIGITIZED
+  REPOSITORY
+  FROM_AUTHOR
+  GENERATED_FROM_MODEL
+}
+
+class RefractiveIndexMeasurementMethod {
+  name : String
+}
+
+class EllipsometryFittingModel {
+  name : String
+  description : String
+}
+
+class DepositionMethod {
+  name : String
+}
+
+class CappingLayer {
+  material : String
+  thickness : Decimal
+}
+
+' ---- Associations ------------------------------------------------------
+
+Material *-- "samples [0..*]" Sample
+Source -- "samples [0..*]" Sample
+
+Sample *-- "datasets [1..*]" RefractiveIndexDataset
+RefractiveIndexDataset *-- "datapoints [0..*]" OpticalDataPoint
+
+RefractiveIndexDataset --> "phase [1]" Phase
+RefractiveIndexDataset --> "extractionMethod [1]" DataExtractionMethod
+RefractiveIndexDataset --> "measurementMethod [0..1]" RefractiveIndexMeasurementMethod
+RefractiveIndexDataset --> "fittingModel [0..1]" EllipsometryFittingModel
+
+Sample --> "depositionMethod [0..1]" DepositionMethod
+Sample *-- "cappingLayer [0..1]" CappingLayer
+
+' ---- Notes -------------------------------------------------------------
+
+note right of Sample
+  number is unique within a material. id is derived
+  as formulation + "_" + number (e.g. Sb2S3_1)
+  and is unique in the database. pcmThickness is in nm.
+end note
+
+note right of RefractiveIndexDataset
+  A sample has one dataset per phase. Each dataset
+  is a table with lambda, n and k columns.
+end note
+
+note bottom of OpticalDataPoint
+  One row of lambda, n and k. n + ki is the complex
+  refractive index at that wavelength.
+end note
+
+note bottom of DataExtractionMethod
+  Provenance of the imported dataset, not an
+  intrinsic property of the sample.
+end note
+
+note bottom of CappingLayer
+  thickness is in nm. The capping layer is absent
+  when the sample has none (CSV value "none").
+end note
+
+@enduml

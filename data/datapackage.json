@@ -1,0 +1,143 @@
+{
+  "profile": "tabular-data-package",
+  "name": "matlodge-pcms",
+  "title": "Matlodge PCM samples",
+  "description": "Sample-level metadata for the phase-change materials collected for Matlodge. One row describes one sample, its source publication, and the available sample-preparation metadata. Optical properties (lambda, n and k) are stored separately as per-phase datasets.",
+  "keywords": [
+    "phase-change materials",
+    "PCM",
+    "refractive index",
+    "optical properties"
+  ],
+  "resources": [
+    {
+      "profile": "tabular-data-resource",
+      "name": "pcms",
+      "title": "PCM samples",
+      "description": "Sample metadata exported as a semicolon-delimited CSV file.",
+      "path": "pcms.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "dialect": {
+        "delimiter": ";",
+        "header": true,
+        "skipBlankRows": true
+      },
+      "schema": {
+        "missingValues": [
+          "",
+          "not specified",
+          "—"
+        ],
+        "fields": [
+          {
+            "name": "material",
+            "title": "Material formulation",
+            "type": "string",
+            "description": "Chemical formulation of the phase-change material, for example Sb2S3 or Ge2Sb2Te5.",
+            "constraints": {
+              "required": true,
+              "minLength": 1
+            }
+          },
+          {
+            "name": "sample_id",
+            "title": "Sample identifier",
+            "type": "string",
+            "description": "Identifier formed as <material>_<sample number>, for example Sb2S3_1.",
+            "constraints": {
+              "required": true,
+              "pattern": "^[A-Za-z0-9.]+_[0-9]+$"
+            }
+          },
+          {
+            "name": "source_doi",
+            "title": "Source DOI",
+            "type": "string",
+            "description": "DOI of the source publication as reported in the source data. Some values include a legacy dx.doi.org prefix.",
+            "constraints": {
+              "required": true,
+              "minLength": 1
+            }
+          },
+          {
+            "name": "doi_link",
+            "title": "DOI link",
+            "type": "string",
+            "format": "uri",
+            "description": "Resolvable link to the source publication.",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "source_title",
+            "title": "Source title",
+            "type": "string",
+            "description": "Title of the source publication.",
+            "constraints": {
+              "required": true,
+              "minLength": 1
+            }
+          },
+          {
+            "name": "data_extraction_method",
+            "title": "Data extraction method",
+            "type": "string",
+            "description": "Method used to import the data into Matlodge. This describes the provenance of the imported dataset rather than a property of the sample. The spelling 'digitalized' is kept as used in the source data.",
+            "constraints": {
+              "required": true,
+              "enum": [
+                "digitalized",
+                "generated from model",
+                "repository",
+                "from author"
+              ]
+            }
+          },
+          {
+            "name": "ri_measurement_method",
+            "title": "Refractive index measurement method",
+            "type": "string",
+            "description": "Method used to measure the refractive index, for example ellipsometry or reflectance."
+          },
+          {
+            "name": "source_model",
+            "title": "Ellipsometry fitting model",
+            "type": "string",
+            "description": "Fitting or optical-constants model reported by the source, for example Tauc-Lorentz or Cody-Lorentz."
+          },
+          {
+            "name": "source_model_has_parameters",
+            "title": "Fitting-model parameters available",
+            "type": "boolean",
+            "trueValues": [
+              "available",
+              "avialable"
+            ],
+            "description": "Whether the fitting-model parameters are available. The source values 'available' and the typo 'avialable' map to true; 'not specified' and the em dash are treated as missing."
+          },
+          {
+            "name": "deposition_method",
+            "title": "Deposition method",
+            "type": "string",
+            "description": "Method used to deposit the phase-change material film, for example RF sputtering or thermal evaporation."
+          },
+          {
+            "name": "thickness",
+            "title": "PCM thickness",
+            "type": "string",
+            "description": "Thickness as reported by the source, including its unit. Values may be ranges or contain more than one measurement, for example '100 nm', '600-750 nm' or '137 and 183 nm'."
+          },
+          {
+            "name": "capping_layer",
+            "title": "Capping layer",
+            "type": "string",
+            "description": "Capping layer as reported, for example '10 nm ITO' or '3 nm Al2O3'. The value 'none' means that the sample has no capping layer."
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "@context": [
+    "http://www.w3.org/ns/csvw",
+    {
+      "@language": "en"
+    }
+  ],
+  "@type": "Table",
+  "url": "pcms.csv",
+  "dc:title": "Matlodge PCM samples",
+  "dc:description": "Sample-level metadata for the phase-change materials collected for Matlodge. One row describes one sample, its source publication, and the available sample-preparation metadata. Optical properties (lambda, n and k) are stored separately as per-phase datasets.",
+  "dcat:keyword": [
+    "phase-change materials",
+    "PCM",
+    "refractive index",
+    "optical properties"
+  ],
+  "dialect": {
+    "encoding": "utf-8",
+    "delimiter": ";",
+    "header": true
+  },
+  "null": [
+    "",
+    "not specified",
+    "—"
+  ],
+  "tableSchema": {
+    "columns": [
+      {
+        "name": "material",
+        "titles": "material",
+        "datatype": "string",
+        "required": true,
+        "dc:description": "Chemical formulation of the phase-change material, for example Sb2S3 or Ge2Sb2Te5."
+      },
+      {
+        "name": "sample_id",
+        "titles": "sample_id",
+        "datatype": {
+          "base": "string",
+          "format": "^[A-Za-z0-9.]+_[0-9]+$"
+        },
+        "required": true,
+        "dc:description": "Identifier formed as <material>_<sample number>, for example Sb2S3_1."
+      },
+      {
+        "name": "source_doi",
+        "titles": "source_doi",
+        "datatype": "string",
+        "required": true,
+        "dc:description": "DOI of the source publication as reported in the source data. Some values include a legacy dx.doi.org prefix."
+      },
+      {
+        "name": "doi_link",
+        "titles": "doi_link",
+        "datatype": "anyURI",
+        "required": true,
+        "dc:description": "Resolvable link to the source publication."
+      },
+      {
+        "name": "source_title",
+        "titles": "source_title",
+        "datatype": "string",
+        "required": true,
+        "dc:description": "Title of the source publication."
+      },
+      {
+        "name": "data_extraction_method",
+        "titles": "data_extraction_method",
+        "datatype": {
+          "base": "string",
+          "format": "^(digitalized|generated from model|repository|from author)$"
+        },
+        "required": true,
+        "dc:description": "Method used to import the data into Matlodge. This describes the provenance of the imported dataset rather than a property of the sample. The spelling 'digitalized' is kept as used in the source data."
+      },
+      {
+        "name": "ri_measurement_method",
+        "titles": "ri_measurement_method",
+        "datatype": "string",
+        "dc:description": "Method used to measure the refractive index, for example ellipsometry or reflectance."
+      },
+      {
+        "name": "source_model",
+        "titles": "source_model",
+        "datatype": "string",
+        "dc:description": "Fitting or optical-constants model reported by the source, for example Tauc-Lorentz or Cody-Lorentz."
+      },
+      {
+        "name": "source_model_has_parameters",
+        "titles": "source_model_has_parameters",
+        "datatype": {
+          "base": "string",
+          "format": "^(available|avialable)$"
+        },
+        "dc:description": "Whether the fitting-model parameters are available. The source values 'available' and the typo 'avialable' indicate availability; 'not specified' and the em dash are treated as missing."
+      },
+      {
+        "name": "deposition_method",
+        "titles": "deposition_method",
+        "datatype": "string",
+        "dc:description": "Method used to deposit the phase-change material film, for example RF sputtering or thermal evaporation."
+      },
+      {
+        "name": "thickness",
+        "titles": "thickness",
+        "datatype": "string",
+        "dc:description": "Thickness as reported by the source, including its unit. Values may be ranges or contain more than one measurement, for example '100 nm', '600-750 nm' or '137 and 183 nm'."
+      },
+      {
+        "name": "capping_layer",
+        "titles": "capping_layer",
+        "datatype": "string",
+        "dc:description": "Capping layer as reported, for example '10 nm ITO' or '3 nm Al2O3'. The value 'none' means that the sample has no capping layer."
+      }
+    ]
+  }
+}

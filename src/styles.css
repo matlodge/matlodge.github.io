@@ -849,7 +849,7 @@ h3 {
 
   .header-stats {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .header-stats > div {

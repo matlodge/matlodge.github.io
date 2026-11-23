@@ -185,10 +185,6 @@ export default function App() {
             <strong>{totalSamples}</strong>
             <span>samples with data</span>
           </div>
-          <div>
-            <strong>SQLite</strong>
-            <span>loaded locally</span>
-          </div>
         </div>
       </header>
 

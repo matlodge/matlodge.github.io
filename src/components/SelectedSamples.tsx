@@ -22,11 +22,6 @@ export function SelectedSamples({
             {selected.length} / {maxSamples} in this comparison
           </p>
         </div>
-        <div className="line-key" aria-label="Line style key">
-          <span><i className="line-solid" /> crystalline</span>
-          <span><i className="line-dashed" /> amorphous</span>
-          <span><i className="line-delta" /> Δ</span>
-        </div>
         {selected.length > 0 && (
           <button className="text-button" type="button" onClick={onClear}>
             Clear all

@@ -101,7 +101,8 @@ Key architectural rules:
 - A sample can be added only once; the selected-sample limit is 8.
 - Samples can come from the same or different materials.
 - Each sample gets one colour from [src/lib/colors.ts](src/lib/colors.ts), reused across all four plots.
-- Crystalline lines are solid; amorphous lines are dashed.
+- Crystalline lines are solid; amorphous lines are dashed. The line-style key is
+  shown in the n and k plot cards; the Δ cards carry only their title.
 - Δ plots are one line per sample and use `Δ = crystalline − amorphous`, with a zero line.
 - The x-axis is λ in nm by default and can be switched to photon energy E (eV)
   using the `nm` / `eV` control; either unit can be toggled between linear and

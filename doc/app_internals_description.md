@@ -60,11 +60,11 @@ App
 
 [src/components/SampleSelector.tsx](../src/components/SampleSelector.tsx) renders the material dropdown, the sample dropdown, the Add sample button and the currently selected source title. It is a controlled component: values come from props, and changes call `onMaterialChange`, `onSampleChange` and `onAdd`.
 
-[src/components/SelectedSamples.tsx](../src/components/SelectedSamples.tsx) renders the selected-sample chips, colour dots, remove buttons, Clear all action and line-style key. It is a display component that reports removals and clearing through callbacks.
+[src/components/SelectedSamples.tsx](../src/components/SelectedSamples.tsx) renders the selected-sample chips, colour dots, remove buttons and Clear all action. It is a display component that reports removals and clearing through callbacks.
 
 [src/components/OpticalPlotGrid.tsx](../src/components/OpticalPlotGrid.tsx) converts each selected sample into Plotly traces. It creates amorphous dashed traces and crystalline solid traces for n and k, and one Δn/Δk trace per sample. It maps the stored wavelength arrays onto the active x-axis unit (nm or eV), builds matching hover labels, and owns the shared x-axis range state so zooming one chart updates the other three. The range resets when the unit or log scale changes.
 
-[src/components/PlotPanel.tsx](../src/components/PlotPanel.tsx) is the React wrapper around Plotly. It creates the Plotly layout, calls `Plotly.react` when traces or layout change, listens for `plotly_relayout` to keep x-axis ranges synchronized, handles resize events, and purges the chart on unmount. This is the main interoperability layer between React and a non-React DOM library.
+[src/components/PlotPanel.tsx](../src/components/PlotPanel.tsx) is the React wrapper around Plotly. Each card is a `.plot-card` with an HTML header (title `h3` plus an optional crystalline/amorphous line key) above the Plotly div, so charts cannot cover the key. It creates the Plotly layout, calls `Plotly.react` when traces or layout change, listens for `plotly_relayout` to keep x-axis ranges synchronized, handles resize events, and purges the chart on unmount. This is the main interoperability layer between React and a non-React DOM library.
 
 [src/components/SampleDetails.tsx](../src/components/SampleDetails.tsx) renders the metadata cards for selected samples: source title, DOI link, extraction method, measurement method, fitting model, fitting-parameter availability, deposition method, thickness and capping layer. It also lists additional datasets that exist for a sample but are not plotted as the canonical phase pair.
 

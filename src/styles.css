@@ -353,37 +353,6 @@ h3 {
   font-size: 0.78rem;
 }
 
-.line-key {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  color: var(--muted);
-  font-size: 0.74rem;
-}
-
-.line-key span {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  white-space: nowrap;
-}
-
-.line-key i {
-  display: inline-block;
-  width: 25px;
-  height: 0;
-  border-top: 2px solid var(--ink-soft);
-}
-
-.line-key .line-dashed {
-  border-top-style: dashed;
-}
-
-.line-key .line-delta {
-  border-top-width: 3px;
-  border-top-color: var(--teal);
-}
-
 .text-button {
   border: 0;
   color: var(--teal-dark);
@@ -592,13 +561,64 @@ h3 {
   gap: 16px;
 }
 
-.plot-panel {
+.plot-card {
+  display: flex;
+  flex-direction: column;
   height: 356px;
   min-width: 0;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: #fff;
   overflow: hidden;
+}
+
+.plot-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px 0;
+  flex-wrap: wrap;
+}
+
+.plot-card-title {
+  margin: 0;
+  color: #0f172a;
+  font-size: 0.95rem;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.plot-key {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.plot-key span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.plot-key i {
+  display: inline-block;
+  width: 21px;
+  height: 0;
+  border-top: 2px solid var(--ink-soft);
+}
+
+.plot-key .plot-key-dashed {
+  border-top-style: dashed;
+}
+
+.plot-panel {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
 }
 
 .empty-state {
@@ -924,12 +944,6 @@ h3 {
     gap: 12px;
   }
 
-  .line-key {
-    order: 3;
-    width: 100%;
-    gap: 10px;
-  }
-
   .empty-state {
     align-items: flex-start;
     flex-direction: column;
@@ -949,8 +963,8 @@ h3 {
     gap: 12px;
   }
 
-  .plot-panel {
-    height: 300px;
+  .plot-card {
+    height: 320px;
   }
 
   .site-footer {

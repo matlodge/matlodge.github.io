@@ -9,6 +9,8 @@ interface PlotPanelProps {
   traces: Data[];
   logX: boolean;
   xUnit: XUnit;
+  /** Line-style key shown next to the title. No key is drawn for Δ plots. */
+  keyType?: "phase" | "none";
   showZeroLine?: boolean;
   emptyMessage?: string;
   xRange: [number, number] | null;
@@ -59,6 +61,7 @@ export function PlotPanel({
   traces,
   logX,
   xUnit,
+  keyType = "none",
   showZeroLine = false,
   emptyMessage,
   xRange,
@@ -71,13 +74,7 @@ export function PlotPanel({
     const logTicks = logX && extent ? logTickValues(extent[0], extent[1]) : undefined;
     return {
       autosize: true,
-      margin: { l: 64, r: 18, t: 44, b: 50 },
-      title: {
-        text: title,
-        x: 0,
-        xanchor: "left",
-        font: { size: 15, color: "#0f172a" },
-      },
+      margin: { l: 64, r: 18, t: 12, b: 50 },
       paper_bgcolor: "rgba(0,0,0,0)",
       plot_bgcolor: "#ffffff",
       font: {
@@ -128,7 +125,7 @@ export function PlotPanel({
             ]
           : [],
     };
-  }, [emptyMessage, logX, showZeroLine, title, traces, xRange, xUnit, yTitle]);
+  }, [emptyMessage, logX, showZeroLine, traces, xRange, xUnit, yTitle]);
 
   useEffect(() => {
     const element = plotElement.current;
@@ -181,5 +178,22 @@ export function PlotPanel({
     };
   }, []);
 
-  return <div className="plot-panel" ref={plotElement} />;
+  return (
+    <div className="plot-card">
+      <div className="plot-card-header">
+        <h3 className="plot-card-title">{title}</h3>
+        {keyType === "phase" && (
+          <div className="plot-key" aria-label="Line style key">
+            <span>
+              <i className="plot-key-solid" /> crystalline
+            </span>
+            <span>
+              <i className="plot-key-dashed" /> amorphous
+            </span>
+          </div>
+        )}
+      </div>
+      <div className="plot-panel" ref={plotElement} />
+    </div>
+  );
 }

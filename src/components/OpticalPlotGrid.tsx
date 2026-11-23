@@ -141,6 +141,7 @@ export function OpticalPlotGrid({
         traces={nTraces}
         logX={logX}
         xUnit={xUnit}
+        keyType="phase"
         xRange={xRange}
         onRangeChange={setXRange}
         emptyMessage="No n data for the selected samples"
@@ -151,6 +152,7 @@ export function OpticalPlotGrid({
         traces={kTraces}
         logX={logX}
         xUnit={xUnit}
+        keyType="phase"
         xRange={xRange}
         onRangeChange={setXRange}
         emptyMessage="No k data for the selected samples"

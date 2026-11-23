@@ -86,7 +86,7 @@ Key architectural rules:
 | [src/lib/delta.ts](src/lib/delta.ts) | Δn/Δk interpolation and calculation |
 | [src/lib/units.ts](src/lib/units.ts) | X-axis nm ↔ eV conversion, axis titles and hover labels |
 | [src/lib/formula.ts](src/lib/formula.ts) | Chemical-formula display formatting with Unicode subscript digits |
-| [src/lib/colors.ts](src/lib/colors.ts) | Sample colour palette |
+| [src/lib/colors.ts](src/lib/colors.ts) | MATLAB `increasing_color3` palette for the selected lines |
 | [src/types.ts](src/types.ts) | Shared TypeScript types |
 | [src/styles.css](src/styles.css) | Global styling and responsive plot grid |
 | [scripts/build_database.py](scripts/build_database.py) | CSV/TSV -> SQLite import pipeline |
@@ -108,7 +108,7 @@ Key architectural rules:
   via `formatFormula`; native `<select>` options cannot hold `<sub>` markup, so
   stored ASCII values are converted only at display time.
 - Samples can come from the same or different materials.
-- Each sample gets one colour from [src/lib/colors.ts](src/lib/colors.ts), reused across all four plots.
+- Colours come from [src/lib/colors.ts](src/lib/colors.ts), a port of the MATLAB `increasing_color3(n)` helper: the palette is computed from the current number of selected samples, so every line is recoloured when a sample is added or removed. One colour per sample is reused across all four plots.
 - Crystalline lines are solid; amorphous lines are dashed. The line-style key is
   shown in the n and k plot cards; the Δ cards carry only their title.
 - Δ plots are one line per sample and use `Δ = crystalline − amorphous`, with a zero line.

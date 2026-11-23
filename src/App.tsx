@@ -4,7 +4,7 @@ import { SampleDetails } from "./components/SampleDetails";
 import { SampleSelector } from "./components/SampleSelector";
 import { SelectedSamples } from "./components/SelectedSamples";
 import { fetchMaterials, fetchSampleBundle, fetchSampleCount, fetchSamples } from "./lib/sqlite";
-import { nextColor } from "./lib/colors";
+import { withPalette } from "./lib/colors";
 import { formatFormula } from "./lib/formula";
 import { type XUnit } from "./lib/units";
 import type { MaterialSummary, SampleSummary, SelectedSample } from "./types";
@@ -104,14 +104,7 @@ export default function App() {
       setSelected((current) => {
         if (current.some((item) => item.summary.id === summary.id)) return current;
         if (current.length >= MAX_SAMPLES) return current;
-        return [
-          ...current,
-          {
-            summary,
-            bundle,
-            color: nextColor(current.map((item) => item.color)),
-          },
-        ];
+        return withPalette([...current, { summary, bundle }]);
       });
     } catch (error) {
       setNotice(
@@ -124,7 +117,7 @@ export default function App() {
 
   const removeSample = useCallback((id: string) => {
     setSelected((current) =>
-      current.filter((sample) => sample.summary.id !== id),
+      withPalette(current.filter((sample) => sample.summary.id !== id)),
     );
   }, []);
 

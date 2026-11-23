@@ -74,7 +74,7 @@ App
 
 [src/lib/delta.ts](../src/lib/delta.ts) contains the pure delta calculation. Given an amorphous curve and a crystalline curve, it finds the overlapping wavelength range, chooses the denser measured grid, interpolates the other curve onto that grid, and calculates `Δn = n_crystalline − n_amorphous` and `Δk = k_crystalline − k_amorphous`. It does not extrapolate beyond measured ranges.
 
-[src/lib/colors.ts](../src/lib/colors.ts) defines the eight-colour sample palette and `nextColor`, which picks the first unused palette colour when a sample is added.
+[src/lib/colors.ts](../src/lib/colors.ts) is a port of the MATLAB `increasing_color3(n)` helper used for the user's figures. `increasingColors(n)` returns the palette for `n` lines: hand-picked colours for 1–4 samples and a purple-to-orange polynomial ramp for 5 or more. `withPalette(items)` assigns one colour per sample, so colours are recomputed from the current selection size and all lines restyle when samples are added or removed.
 
 [src/lib/units.ts](../src/lib/units.ts) holds the x-axis unit type (`"nm" | "eV"`), the `hc` constant used to convert wavelength to photon energy (`E = 1239.84 / λ`), and the axis titles and hover-label fragments for both units. It also provides `commonRange`, which intersects the amorphous and crystalline wavelength bounds, and `formatLambdaRange`, which renders a range for the sample dropdown.
 

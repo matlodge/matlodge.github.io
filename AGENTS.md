@@ -98,6 +98,10 @@ Key architectural rules:
 
 - The app is one screen; there is no router and no URL state persistence.
 - Material and sample selection use native `<select>` controls, not searchable comboboxes.
+- Each sample option is labelled with its id and the wavelength window shared by
+  its amorphous and crystalline data (e.g. `Sb2S3_8 · 400–900 nm`), which is the
+  domain used by the Δ plots. Samples without an overlap fall back to the single
+  phase's range; disjoint ranges show the id only.
 - A sample can be added only once; the selected-sample limit is 8.
 - Samples can come from the same or different materials.
 - Each sample gets one colour from [src/lib/colors.ts](src/lib/colors.ts), reused across all four plots.

@@ -16,6 +16,13 @@ export interface SampleSummary {
   hasAmorphous: boolean;
   hasCrystalline: boolean;
   datasetCount: number;
+  amorphousRange: WavelengthRange | null;
+  crystallineRange: WavelengthRange | null;
+}
+
+export interface WavelengthRange {
+  min: number;
+  max: number;
 }
 
 export interface DatasetSummary {

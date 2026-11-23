@@ -8,6 +8,7 @@ import type {
   SampleBundle,
   SampleMetadata,
   SampleSummary,
+  WavelengthRange,
 } from "../types";
 import { computeDelta } from "./delta";
 
@@ -113,6 +114,10 @@ export async function fetchSamples(materialId: number): Promise<SampleSummary[]>
     has_amorphous: number;
     has_crystalline: number;
     dataset_count: number;
+    amor_min: number | null;
+    amor_max: number | null;
+    cryst_min: number | null;
+    cryst_max: number | null;
   }>(
     database,
     `
@@ -139,7 +144,35 @@ export async function fetchSamples(materialId: number): Promise<SampleSummary[]>
           SELECT COUNT(*)
           FROM refractive_index_datasets d
           WHERE d.sample_id = s.id
-        ) AS dataset_count
+        ) AS dataset_count,
+        (
+          SELECT MIN(o.lambda_nm)
+          FROM optical_data_points o
+          JOIN refractive_index_datasets d ON d.id = o.dataset_id
+          JOIN phases p ON p.id = d.phase_id
+          WHERE d.sample_id = s.id AND p.code = 'AMORPHOUS'
+        ) AS amor_min,
+        (
+          SELECT MAX(o.lambda_nm)
+          FROM optical_data_points o
+          JOIN refractive_index_datasets d ON d.id = o.dataset_id
+          JOIN phases p ON p.id = d.phase_id
+          WHERE d.sample_id = s.id AND p.code = 'AMORPHOUS'
+        ) AS amor_max,
+        (
+          SELECT MIN(o.lambda_nm)
+          FROM optical_data_points o
+          JOIN refractive_index_datasets d ON d.id = o.dataset_id
+          JOIN phases p ON p.id = d.phase_id
+          WHERE d.sample_id = s.id AND p.code = 'CRYSTALLINE'
+        ) AS cryst_min,
+        (
+          SELECT MAX(o.lambda_nm)
+          FROM optical_data_points o
+          JOIN refractive_index_datasets d ON d.id = o.dataset_id
+          JOIN phases p ON p.id = d.phase_id
+          WHERE d.sample_id = s.id AND p.code = 'CRYSTALLINE'
+        ) AS cryst_max
       FROM samples s
       JOIN materials m ON m.id = s.material_id
       JOIN sources src ON src.doi = s.source_doi
@@ -157,7 +190,15 @@ export async function fetchSamples(materialId: number): Promise<SampleSummary[]>
     hasAmorphous: Boolean(row.has_amorphous),
     hasCrystalline: Boolean(row.has_crystalline),
     datasetCount: asNumber(row.dataset_count),
+    amorphousRange: toRange(row.amor_min, row.amor_max),
+    crystallineRange: toRange(row.cryst_min, row.cryst_max),
   }));
+}
+
+function toRange(min: unknown, max: unknown): WavelengthRange | null {
+  const low = asNullableNumber(min);
+  const high = asNullableNumber(max);
+  return low !== null && high !== null && high > low ? { min: low, max: high } : null;
 }
 
 function pickAmorphous(datasets: DatasetSummary[]): DatasetSummary | null {

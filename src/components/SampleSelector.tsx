@@ -1,4 +1,5 @@
 import type { MaterialSummary, SampleSummary } from "../types";
+import { commonRange, formatLambdaRange } from "../lib/units";
 
 interface SampleSelectorProps {
   materials: MaterialSummary[];
@@ -61,11 +62,16 @@ export function SampleSelector({
             onChange={(event) => onSampleChange(event.target.value)}
             disabled={samplesLoading || samples.length === 0}
           >
-            {samples.map((sample) => (
-              <option key={sample.id} value={sample.id}>
-                {sample.id}
-              </option>
-            ))}
+            {samples.map((sample) => {
+              const range = formatLambdaRange(
+                commonRange(sample.amorphousRange, sample.crystallineRange),
+              );
+              return (
+                <option key={sample.id} value={sample.id}>
+                  {range ? `${sample.id} · ${range}` : sample.id}
+                </option>
+              );
+            })}
           </select>
         </label>
 

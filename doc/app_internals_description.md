@@ -58,7 +58,7 @@ App
 
 ### Components
 
-[src/components/SampleSelector.tsx](../src/components/SampleSelector.tsx) renders the material dropdown, the sample dropdown, the Add sample button and the currently selected source title. It is a controlled component: values come from props, and changes call `onMaterialChange`, `onSampleChange` and `onAdd`.
+[src/components/SampleSelector.tsx](../src/components/SampleSelector.tsx) renders the material dropdown, the sample dropdown, the Add sample button and the currently selected source title. Each sample option is labelled with the id plus the amorphous/crystalline wavelength overlap from `SampleSummary`, so the extra text appears both in the list and in the closed control. It is a controlled component: values come from props, and changes call `onMaterialChange`, `onSampleChange` and `onAdd`.
 
 [src/components/SelectedSamples.tsx](../src/components/SelectedSamples.tsx) renders the selected-sample chips, colour dots, remove buttons and Clear all action. It is a display component that reports removals and clearing through callbacks.
 
@@ -76,7 +76,7 @@ App
 
 [src/lib/colors.ts](../src/lib/colors.ts) defines the eight-colour sample palette and `nextColor`, which picks the first unused palette colour when a sample is added.
 
-[src/lib/units.ts](../src/lib/units.ts) holds the x-axis unit type (`"nm" | "eV"`), the `hc` constant used to convert wavelength to photon energy (`E = 1239.84 / λ`), and the axis titles and hover-label fragments for both units.
+[src/lib/units.ts](../src/lib/units.ts) holds the x-axis unit type (`"nm" | "eV"`), the `hc` constant used to convert wavelength to photon energy (`E = 1239.84 / λ`), and the axis titles and hover-label fragments for both units. It also provides `commonRange`, which intersects the amorphous and crystalline wavelength bounds, and `formatLambdaRange`, which renders a range for the sample dropdown.
 
 [src/types.ts](../src/types.ts) defines the shared TypeScript contracts for materials, samples, datasets, curves, metadata and selected samples.
 

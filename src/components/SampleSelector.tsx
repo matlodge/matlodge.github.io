@@ -1,4 +1,5 @@
 import type { MaterialSummary, SampleSummary } from "../types";
+import { formatFormula } from "../lib/formula";
 import { commonRange, formatLambdaRange } from "../lib/units";
 
 interface SampleSelectorProps {
@@ -49,7 +50,7 @@ export function SampleSelector({
           >
             {materials.map((material) => (
               <option key={material.id} value={material.id}>
-                {material.formulation} ({material.sampleCount})
+                {formatFormula(material.formulation)} ({material.sampleCount})
               </option>
             ))}
           </select>

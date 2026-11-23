@@ -85,6 +85,7 @@ Key architectural rules:
 | [src/lib/sqlite.ts](src/lib/sqlite.ts) | SQLite-WASM initialization, queries and row-to-TypeScript mapping |
 | [src/lib/delta.ts](src/lib/delta.ts) | Δn/Δk interpolation and calculation |
 | [src/lib/units.ts](src/lib/units.ts) | X-axis nm ↔ eV conversion, axis titles and hover labels |
+| [src/lib/formula.ts](src/lib/formula.ts) | Chemical-formula display formatting with Unicode subscript digits |
 | [src/lib/colors.ts](src/lib/colors.ts) | Sample colour palette |
 | [src/types.ts](src/types.ts) | Shared TypeScript types |
 | [src/styles.css](src/styles.css) | Global styling and responsive plot grid |
@@ -103,6 +104,9 @@ Key architectural rules:
   domain used by the Δ plots. Samples without an overlap fall back to the single
   phase's range; disjoint ranges show the id only.
 - A sample can be added only once; the selected-sample limit is 8.
+- Material formulations are shown with Unicode subscript digits (`Ge₂Sb₂Te₅`)
+  via `formatFormula`; native `<select>` options cannot hold `<sub>` markup, so
+  stored ASCII values are converted only at display time.
 - Samples can come from the same or different materials.
 - Each sample gets one colour from [src/lib/colors.ts](src/lib/colors.ts), reused across all four plots.
 - Crystalline lines are solid; amorphous lines are dashed. The line-style key is

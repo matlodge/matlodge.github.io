@@ -1,4 +1,5 @@
 import type { SelectedSample } from "../types";
+import { formatFormula } from "../lib/formula";
 
 interface SelectedSamplesProps {
   selected: SelectedSample[];
@@ -44,7 +45,7 @@ export function SelectedSamples({
               />
               <span className="chip-text">
                 <strong>{sample.summary.id}</strong>
-                <small>{sample.summary.material}</small>
+                <small>{formatFormula(sample.summary.material)}</small>
               </span>
               <button
                 type="button"

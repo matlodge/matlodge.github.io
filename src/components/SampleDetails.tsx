@@ -1,4 +1,5 @@
 import type { DatasetSummary, SelectedSample } from "../types";
+import { formatFormula } from "../lib/formula";
 
 interface SampleDetailsProps {
   selected: SelectedSample[];
@@ -85,7 +86,7 @@ export function SampleDetails({ selected }: SampleDetailsProps) {
                 />
                 <div>
                   <h3>{sample.summary.id}</h3>
-                  <p>{sample.summary.material}</p>
+                  <p>{formatFormula(sample.summary.material)}</p>
                 </div>
               </div>
 

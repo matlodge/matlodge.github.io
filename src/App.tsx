@@ -5,6 +5,7 @@ import { SampleSelector } from "./components/SampleSelector";
 import { SelectedSamples } from "./components/SelectedSamples";
 import { fetchMaterials, fetchSampleBundle, fetchSampleCount, fetchSamples } from "./lib/sqlite";
 import { nextColor } from "./lib/colors";
+import { formatFormula } from "./lib/formula";
 import { type XUnit } from "./lib/units";
 import type { MaterialSummary, SampleSummary, SelectedSample } from "./types";
 
@@ -233,7 +234,7 @@ export default function App() {
                   Comparing {selected.length} sample
                   {selected.length === 1 ? "" : "s"} across the database
                   {sampleCountForMaterial > 0
-                    ? ` · ${sampleCountForMaterial} ${materialName} samples available`
+                    ? ` · ${sampleCountForMaterial} ${formatFormula(materialName)} samples available`
                     : ""}
                 </p>
               )}

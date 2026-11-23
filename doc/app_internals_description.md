@@ -78,6 +78,8 @@ App
 
 [src/lib/units.ts](../src/lib/units.ts) holds the x-axis unit type (`"nm" | "eV"`), the `hc` constant used to convert wavelength to photon energy (`E = 1239.84 / λ`), and the axis titles and hover-label fragments for both units. It also provides `commonRange`, which intersects the amorphous and crystalline wavelength bounds, and `formatLambdaRange`, which renders a range for the sample dropdown.
 
+[src/lib/formula.ts](../src/lib/formula.ts) formats chemical formulations for display by replacing ASCII digits with Unicode subscript digits (`Ge2Sb2Te5` → `Ge₂Sb₂Te₅`). It is used in the material dropdown, the selected-sample chips, the details cards and the comparison note. Stored values remain ASCII; the substitution happens only when rendering, because a native `<select>` option cannot contain `<sub>` markup.
+
 [src/types.ts](../src/types.ts) defines the shared TypeScript contracts for materials, samples, datasets, curves, metadata and selected samples.
 
 ### Styling

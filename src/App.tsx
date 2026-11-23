@@ -165,7 +165,7 @@ export default function App() {
             aria-hidden="true"
           />
           <div>
-            <p className="brand-kicker">Optical materials database</p>
+            <p className="brand-kicker">Optical phase-change materials database</p>
             <h1>Matlodge</h1>
             <p className="brand-subtitle">
               Refractive-index explorer for phase-change materials

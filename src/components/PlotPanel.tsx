@@ -41,7 +41,9 @@ function logTickValues(low: number, high: number): number[] {
     exponent <= Math.ceil(Math.log10(high));
     exponent += 1
   ) {
-    for (const mantissa of [1, 2, 5]) {
+    // Whole-mantissa ticks only (200, 300, 500, 1000); fractional ticks such
+    // as 0.8 or 0.9 crowd together near the low end of a log axis.
+    for (const mantissa of [1, 2, 3, 5]) {
       const value = mantissa * 10 ** exponent;
       if (value >= low && value <= high) values.push(value);
     }
@@ -88,7 +90,7 @@ export function PlotPanel({
         type: logX ? "log" : "linear",
         range: xRange ?? undefined,
         autorange: xRange === null,
-        nticks: 6,
+        nticks: 12,
         tickvals: logTicks,
         gridcolor: "#e8edf3",
         zeroline: false,

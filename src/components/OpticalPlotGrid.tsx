@@ -29,7 +29,7 @@ function lineTrace(
     name: `${sample.summary.id} · ${label}`,
     line: {
       color: sample.color,
-      width: dash === "dash" ? 1.45 : 1.8,
+      width: dash === "dash" ? 1.95 : 2.35,
       dash,
     },
     connectgaps: false,
@@ -49,7 +49,7 @@ function deltaTrace(sample: SelectedSample, xUnit: XUnit): Data | null {
     type: "scattergl",
     mode: "lines",
     name: `${sample.summary.id} · Δn`,
-    line: { color: sample.color, width: 2.1, dash: "solid" },
+    line: { color: sample.color, width: 2.6, dash: "solid" },
     connectgaps: false,
     hovertemplate:
       `<b>${sample.summary.id}</b><br>` +
@@ -67,7 +67,7 @@ function deltaTraceK(sample: SelectedSample, xUnit: XUnit): Data | null {
     type: "scattergl",
     mode: "lines",
     name: `${sample.summary.id} · Δk`,
-    line: { color: sample.color, width: 2.1, dash: "solid" },
+    line: { color: sample.color, width: 2.6, dash: "solid" },
     connectgaps: false,
     hovertemplate:
       `<b>${sample.summary.id}</b><br>` +

@@ -608,7 +608,7 @@ h3 {
   display: inline-block;
   width: 21px;
   height: 0;
-  border-top: 2px solid var(--ink-soft);
+  border-top: 2.4px solid var(--ink-soft);
 }
 
 .plot-key .plot-key-dashed {

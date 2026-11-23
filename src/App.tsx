@@ -5,6 +5,7 @@ import { SampleSelector } from "./components/SampleSelector";
 import { SelectedSamples } from "./components/SelectedSamples";
 import { fetchMaterials, fetchSampleBundle, fetchSampleCount, fetchSamples } from "./lib/sqlite";
 import { nextColor } from "./lib/colors";
+import { type XUnit } from "./lib/units";
 import type { MaterialSummary, SampleSummary, SelectedSample } from "./types";
 
 const MAX_SAMPLES = 8;
@@ -27,6 +28,7 @@ export default function App() {
   const [selected, setSelected] = useState<SelectedSample[]>([]);
   const [adding, setAdding] = useState(false);
   const [logX, setLogX] = useState(false);
+  const [xUnit, setXUnit] = useState<XUnit>("nm");
 
   useEffect(() => {
     let cancelled = false;
@@ -236,15 +238,32 @@ export default function App() {
                 </p>
               )}
             </div>
-            <label className="toggle">
-              <input
-                type="checkbox"
-                checked={logX}
-                onChange={(event) => setLogX(event.target.checked)}
-              />
-              <span className="toggle-track" aria-hidden="true" />
-              Log λ axis
-            </label>
+            <div className="plot-controls">
+              <div className="unit-toggle" role="group" aria-label="X-axis units">
+                {(["nm", "eV"] as const).map((unit) => (
+                  <button
+                    key={unit}
+                    type="button"
+                    className={
+                      xUnit === unit ? "unit-option is-active" : "unit-option"
+                    }
+                    aria-pressed={xUnit === unit}
+                    onClick={() => setXUnit(unit)}
+                  >
+                    {unit}
+                  </button>
+                ))}
+              </div>
+              <label className="toggle">
+                <input
+                  type="checkbox"
+                  checked={logX}
+                  onChange={(event) => setLogX(event.target.checked)}
+                />
+                <span className="toggle-track" aria-hidden="true" />
+                Log {xUnit === "nm" ? "λ" : "E"} axis
+              </label>
+            </div>
           </div>
 
           {selected.length === 0 ? (
@@ -268,7 +287,7 @@ export default function App() {
               </div>
             </div>
           ) : (
-            <OpticalPlotGrid selected={selected} logX={logX} />
+            <OpticalPlotGrid selected={selected} logX={logX} xUnit={xUnit} />
           )}
         </section>
 

@@ -84,6 +84,7 @@ Key architectural rules:
 | [src/components/SampleDetails.tsx](src/components/SampleDetails.tsx) | Source and sample-preparation metadata cards |
 | [src/lib/sqlite.ts](src/lib/sqlite.ts) | SQLite-WASM initialization, queries and row-to-TypeScript mapping |
 | [src/lib/delta.ts](src/lib/delta.ts) | Δn/Δk interpolation and calculation |
+| [src/lib/units.ts](src/lib/units.ts) | X-axis nm ↔ eV conversion, axis titles and hover labels |
 | [src/lib/colors.ts](src/lib/colors.ts) | Sample colour palette |
 | [src/types.ts](src/types.ts) | Shared TypeScript types |
 | [src/styles.css](src/styles.css) | Global styling and responsive plot grid |
@@ -102,7 +103,9 @@ Key architectural rules:
 - Each sample gets one colour from [src/lib/colors.ts](src/lib/colors.ts), reused across all four plots.
 - Crystalline lines are solid; amorphous lines are dashed.
 - Δ plots are one line per sample and use `Δ = crystalline − amorphous`, with a zero line.
-- The x-axis is λ in nm and can be toggled between linear and logarithmic.
+- The x-axis is λ in nm by default and can be switched to photon energy E (eV)
+  using the `nm` / `eV` control; either unit can be toggled between linear and
+  logarithmic.
 - X-axis zoom is shared across the four charts; each chart is a separate Plotly instance.
 - The sample details cards show source DOI/title, extraction method, measurement method, fitting model, parameter availability, deposition method, thickness and capping layer.
 - Additional crystalline or reamorphized datasets are stored and noted in the details card, but the plots use the canonical pair: base amorphous and base crystalline, falling back to `_cryst_1` when no base crystalline file exists.

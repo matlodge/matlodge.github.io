@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef } from "react";
 import Plotly from "plotly.js-dist-min";
 import type { Config, Data, Layout, PlotlyHTMLElement, PlotRelayoutEvent } from "plotly.js";
+import { X_UNIT_TITLES, type XUnit } from "../lib/units";
 
 interface PlotPanelProps {
   title: string;
   yTitle: string;
   traces: Data[];
   logX: boolean;
+  xUnit: XUnit;
   showZeroLine?: boolean;
   emptyMessage?: string;
   xRange: [number, number] | null;
@@ -56,6 +58,7 @@ export function PlotPanel({
   yTitle,
   traces,
   logX,
+  xUnit,
   showZeroLine = false,
   emptyMessage,
   xRange,
@@ -84,7 +87,7 @@ export function PlotPanel({
         color: "#475569",
       },
       xaxis: {
-        title: { text: "λ (nm)", standoff: 12 },
+        title: { text: X_UNIT_TITLES[xUnit], standoff: 12 },
         type: logX ? "log" : "linear",
         range: xRange ?? undefined,
         autorange: xRange === null,
@@ -125,7 +128,7 @@ export function PlotPanel({
             ]
           : [],
     };
-  }, [emptyMessage, logX, showZeroLine, title, traces, xRange, yTitle]);
+  }, [emptyMessage, logX, showZeroLine, title, traces, xRange, xUnit, yTitle]);
 
   useEffect(() => {
     const element = plotElement.current;

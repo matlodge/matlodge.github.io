@@ -54,7 +54,7 @@ App
 
 [src/main.tsx](../src/main.tsx) creates the React root with `createRoot`, imports the global stylesheet [src/styles.css](../src/styles.css), and renders `<App />` inside `<StrictMode>`.
 
-[src/App.tsx](../src/App.tsx) is the main container. It owns the database initialization status, materials list, total sample count, selected material, sample list, selected sample ID, selected-sample array, notice/error state and log-axis state. It also defines the add/remove/clear logic and composes the page sections.
+[src/App.tsx](../src/App.tsx) is the main container. It owns the database initialization status, materials list, total sample count, selected material, sample list, selected sample ID, selected-sample array, notice/error state, log-axis state and x-axis unit state. It also defines the add/remove/clear logic and composes the page sections.
 
 ### Components
 
@@ -62,7 +62,7 @@ App
 
 [src/components/SelectedSamples.tsx](../src/components/SelectedSamples.tsx) renders the selected-sample chips, colour dots, remove buttons, Clear all action and line-style key. It is a display component that reports removals and clearing through callbacks.
 
-[src/components/OpticalPlotGrid.tsx](../src/components/OpticalPlotGrid.tsx) converts each selected sample into Plotly traces. It creates amorphous dashed traces and crystalline solid traces for n and k, and one Δn/Δk trace per sample. It also owns the shared x-axis range state so zooming one chart updates the other three.
+[src/components/OpticalPlotGrid.tsx](../src/components/OpticalPlotGrid.tsx) converts each selected sample into Plotly traces. It creates amorphous dashed traces and crystalline solid traces for n and k, and one Δn/Δk trace per sample. It maps the stored wavelength arrays onto the active x-axis unit (nm or eV), builds matching hover labels, and owns the shared x-axis range state so zooming one chart updates the other three. The range resets when the unit or log scale changes.
 
 [src/components/PlotPanel.tsx](../src/components/PlotPanel.tsx) is the React wrapper around Plotly. It creates the Plotly layout, calls `Plotly.react` when traces or layout change, listens for `plotly_relayout` to keep x-axis ranges synchronized, handles resize events, and purges the chart on unmount. This is the main interoperability layer between React and a non-React DOM library.
 
@@ -75,6 +75,8 @@ App
 [src/lib/delta.ts](../src/lib/delta.ts) contains the pure delta calculation. Given an amorphous curve and a crystalline curve, it finds the overlapping wavelength range, chooses the denser measured grid, interpolates the other curve onto that grid, and calculates `Δn = n_crystalline − n_amorphous` and `Δk = k_crystalline − k_amorphous`. It does not extrapolate beyond measured ranges.
 
 [src/lib/colors.ts](../src/lib/colors.ts) defines the eight-colour sample palette and `nextColor`, which picks the first unused palette colour when a sample is added.
+
+[src/lib/units.ts](../src/lib/units.ts) holds the x-axis unit type (`"nm" | "eV"`), the `hc` constant used to convert wavelength to photon energy (`E = 1239.84 / λ`), and the axis titles and hover-label fragments for both units.
 
 [src/types.ts](../src/types.ts) defines the shared TypeScript contracts for materials, samples, datasets, curves, metadata and selected samples.
 

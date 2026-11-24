@@ -159,7 +159,7 @@ export function OpticalPlotGrid({
       />
       <PlotPanel
         title="Refractive-index contrast Δn"
-        yTitle="Δn (cryst − amor)"
+        yTitle={"Δn (n<sub>cryst</sub> − n<sub>amorph</sub>)"}
         traces={deltaNTraces}
         logX={logX}
         xUnit={xUnit}
@@ -174,7 +174,7 @@ export function OpticalPlotGrid({
       />
       <PlotPanel
         title="Extinction-coefficient contrast Δk"
-        yTitle="Δk (cryst − amor)"
+        yTitle={"Δk (k<sub>cryst</sub> − k<sub>amorph</sub>)"}
         traces={deltaKTraces}
         logX={logX}
         xUnit={xUnit}

@@ -47,7 +47,7 @@ It writes:
 - `public/data/matlodge.sqlite` — the runtime database;
 - `build/db-report.json` — import counts, skipped rows, warnings and parsed-file statistics.
 
-The current import policy is deliberately strict. Metadata rows with ambiguous thickness values (two values, ranges, mixed units) are skipped together with their optical datasets. With the current data this leaves **27 samples** and **57 datasets**; `Sb2S3_2` and `Sb2S3_14` are reported as skipped. Missing optional values are stored as `NULL`.
+Every metadata row is imported. A thickness that is a single value in nm is stored numerically; ambiguous values (`100 nm and 1 µm`, `600-750 nm`, atomic-layer films) keep their original text in `pcm_thickness_text` / `capping_layers.thickness_text`, so neither the sample nor its optical data is lost. With the current data that gives **80 samples** and **163 datasets**. Missing optional values are stored as `NULL`.
 
 Run the database checks with:
 

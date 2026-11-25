@@ -22,15 +22,22 @@ function extractionLabel(value: string | null | undefined): string {
   return EXTRACTION_LABELS[value] ?? value;
 }
 
-function thickness(value: number | null): string {
-  return value === null ? "Not reported" : `${value} nm`;
+function thickness(value: number | null, text: string | null): string {
+  if (value !== null) return `${value} nm`;
+  return text ?? "Not reported";
 }
 
 function cappingLayer(sample: SelectedSample["bundle"]["sample"]): string {
   if (!sample.cappingMaterial) return "None / not reported";
-  return sample.cappingThicknessNm === null
-    ? sample.cappingMaterial
-    : `${sample.cappingThicknessNm} nm ${sample.cappingMaterial}`;
+  if (sample.cappingThicknessNm !== null) {
+    return `${sample.cappingThicknessNm} nm ${sample.cappingMaterial}`;
+  }
+  const text = sample.cappingThicknessText;
+  if (!text) return sample.cappingMaterial;
+  // The raw text often already names the material ("100-atomic-layer Al2O3 film").
+  return text.toLowerCase().includes(sample.cappingMaterial.toLowerCase())
+    ? text
+    : `${text} ${sample.cappingMaterial}`;
 }
 
 function phaseLabel(dataset: DatasetSummary): string {
@@ -123,7 +130,12 @@ export function SampleDetails({ selected }: SampleDetailsProps) {
                 </div>
                 <div>
                   <dt>PCM thickness</dt>
-                  <dd>{thickness(sample.bundle.sample.pcmThicknessNm)}</dd>
+                  <dd>
+                    {thickness(
+                      sample.bundle.sample.pcmThicknessNm,
+                      sample.bundle.sample.pcmThicknessText,
+                    )}
+                  </dd>
                 </div>
                 <div>
                   <dt>Capping layer</dt>

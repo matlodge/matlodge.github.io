@@ -272,9 +272,11 @@ export async function fetchSampleBundle(sampleId: string): Promise<SampleBundle>
     source_title: string;
     source_link: string;
     pcm_thickness_nm: number | null;
+    pcm_thickness_text: string | null;
     deposition_method: string | null;
     capping_material: string | null;
     capping_thickness_nm: number | null;
+    capping_thickness_text: string | null;
   }>(
     database,
     `
@@ -286,9 +288,11 @@ export async function fetchSampleBundle(sampleId: string): Promise<SampleBundle>
         src.title AS source_title,
         src.doi_link AS source_link,
         s.pcm_thickness_nm,
+        s.pcm_thickness_text,
         dm.name AS deposition_method,
         cl.material AS capping_material,
-        cl.thickness_nm AS capping_thickness_nm
+        cl.thickness_nm AS capping_thickness_nm,
+        cl.thickness_text AS capping_thickness_text
       FROM samples s
       JOIN materials m ON m.id = s.material_id
       JOIN sources src ON src.doi = s.source_doi
@@ -310,9 +314,11 @@ export async function fetchSampleBundle(sampleId: string): Promise<SampleBundle>
     sourceTitle: String(row.source_title),
     sourceLink: String(row.source_link),
     pcmThicknessNm: asNullableNumber(row.pcm_thickness_nm),
+    pcmThicknessText: asNullableString(row.pcm_thickness_text),
     depositionMethod: asNullableString(row.deposition_method),
     cappingMaterial: asNullableString(row.capping_material),
     cappingThicknessNm: asNullableNumber(row.capping_thickness_nm),
+    cappingThicknessText: asNullableString(row.capping_thickness_text),
   };
 
   const datasets = queryRows<{

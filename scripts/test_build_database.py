@@ -1,3 +1,4 @@
+import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
@@ -16,20 +17,30 @@ class MetadataParsingTests(unittest.TestCase):
         self.assertEqual(db.parse_thickness("not specified"), (None, None))
         self.assertEqual(db.parse_thickness("—"), (None, None))
 
-    def test_ambiguous_thickness_is_rejected(self):
+    def test_ambiguous_thickness_is_kept_as_text(self):
         for value in ("100 nm and 1 µm", "137 and 183 nm", "600-750 nm"):
-            result, error = db.parse_thickness(value)
-            self.assertIsNone(result)
-            self.assertIsNotNone(error)
+            nm, text = db.parse_thickness(value)
+            self.assertIsNone(nm)
+            self.assertEqual(text, value)
 
     def test_capping_layer(self):
         self.assertEqual(
             db.parse_capping_layer("10 nm ITO"),
-            ({"material": "ITO", "thickness_nm": 10.0}, []),
+            (
+                {"material": "ITO", "thickness_nm": 10.0, "thickness_text": None},
+                [],
+            ),
         )
         self.assertEqual(db.parse_capping_layer("none"), (None, []))
         layer, warnings = db.parse_capping_layer("100-atomic-layer Al2O3 film")
-        self.assertEqual(layer, {"material": "Al2O3", "thickness_nm": None})
+        self.assertEqual(
+            layer,
+            {
+                "material": "Al2O3",
+                "thickness_nm": None,
+                "thickness_text": "100-atomic-layer Al2O3 film",
+            },
+        )
         self.assertTrue(warnings)
 
     def test_doi_normalization(self):
@@ -63,11 +74,29 @@ class CurrentDataBuildTests(unittest.TestCase):
             self.assertGreater(result["samples"], 0)
             self.assertGreaterEqual(result["datasets"], result["samples"])
             self.assertGreater(result["points"], 0)
-            skipped_ids = {
-                item["sampleId"] for item in result["skippedMetadata"]
+            # Ambiguous thicknesses must keep their rows and optical data.
+            self.assertEqual(result["skippedMetadata"], [])
+            self.assertGreater(len(result["thicknessTextRows"]), 0)
+            thickness_text = {
+                item["sampleId"]: item["thickness"]
+                for item in result["thicknessTextRows"]
             }
-            self.assertIn("Sb2S3_2", skipped_ids)
-            self.assertIn("Sb2S3_14", skipped_ids)
+            self.assertEqual(thickness_text["Sb2S3_2"], "100 nm and 1 µm")
+
+            with sqlite3.connect(output) as connection:
+                stored = connection.execute(
+                    "SELECT pcm_thickness_nm, pcm_thickness_text FROM samples WHERE id = 'Sb2S3_2'"
+                ).fetchone()
+                points = connection.execute(
+                    """
+                    SELECT COUNT(*)
+                    FROM optical_data_points o
+                    JOIN refractive_index_datasets d ON d.id = o.dataset_id
+                    WHERE d.sample_id = 'Sb2S3_2'
+                    """
+                ).fetchone()
+            self.assertEqual(stored, (None, "100 nm and 1 µm"))
+            self.assertGreater(points[0], 0)
 
 
 class OpticalFileParsingTests(unittest.TestCase):

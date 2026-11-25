@@ -15,6 +15,7 @@ class Sample {
   /id : String
   number : int
   pcmThickness : Decimal
+  pcmThicknessText : String
 }
 
 class Source {
@@ -61,6 +62,7 @@ class DepositionMethod {
 class CappingLayer {
   material : String
   thickness : Decimal
+  thicknessText : String
 }
 
 ' ---- Associations ------------------------------------------------------
@@ -105,6 +107,15 @@ end note
 note bottom of CappingLayer
   thickness is in nm. The capping layer is absent
   when the sample has none (CSV value "none").
+  When the reported thickness is not a numeric nm
+  value it is kept in thicknessText.
+end note
+
+note right of Sample
+  pcmThickness is the numeric thickness in nm when
+  the source reports one value. Ambiguous values
+  (ranges, mixed units) are kept verbatim in
+  pcmThicknessText instead of dropping the sample.
 end note
 
 @enduml

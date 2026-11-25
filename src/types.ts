@@ -60,9 +60,11 @@ export interface SampleMetadata {
   sourceTitle: string;
   sourceLink: string;
   pcmThicknessNm: number | null;
+  pcmThicknessText: string | null;
   depositionMethod: string | null;
   cappingMaterial: string | null;
   cappingThicknessNm: number | null;
+  cappingThicknessText: string | null;
 }
 
 export interface SampleBundle {

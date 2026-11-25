@@ -79,6 +79,7 @@ class MetadataRow:
     deposition_method: str | None
     thickness_nm: float | None
     capping_layer: dict[str, str | float | None] | None
+    thickness_text: str | None = None
     warnings: list[str] = field(default_factory=list)
 
 
@@ -88,6 +89,7 @@ class BuildState:
     warnings: list[str] = field(default_factory=list)
     skipped_metadata: list[dict] = field(default_factory=list)
     skipped_files: list[dict] = field(default_factory=list)
+    thickness_text_rows: list[dict] = field(default_factory=list)
 
 
 def clean(value: str | None) -> str:
@@ -107,12 +109,18 @@ def parse_sample_id(sample_id: str) -> tuple[str, int] | None:
 
 
 def parse_thickness(value: str) -> tuple[float | None, str | None]:
+    """Return (thickness in nm, original text).
+
+    A single numeric nm value becomes a number. Anything else (ranges, mixed
+    units, "100 nm and 1 µm") keeps the original text so the sample and its
+    optical data are still imported and the uncertainty is not lost.
+    """
     value = optional(value)
     if value is None:
         return None, None
     match = THICKNESS_RE.fullmatch(value)
     if not match:
-        return None, f"unsupported thickness value {value!r}"
+        return None, value
     return float(match.group(1)), None
 
 
@@ -121,8 +129,8 @@ def parse_capping_layer(
 ) -> tuple[dict[str, str | float | None] | None, list[str]]:
     """Return (capping layer, warnings).
 
-    ``none`` and missing values produce no capping layer. A capping layer with an
-    unparseable thickness is retained with a material but no thickness.
+    ``none`` and missing values produce no capping layer. A capping layer whose
+    thickness cannot be expressed in nm is retained with its original text.
     """
     value = optional(value)
     if value is None or value.lower() == "none":
@@ -132,17 +140,20 @@ def parse_capping_layer(
         return {
             "material": match.group(2).strip(),
             "thickness_nm": float(match.group(1)),
+            "thickness_text": None,
         }, []
     match = ATOMIC_LAYER_RE.fullmatch(value)
     if match:
         return {
             "material": match.group(1).strip(),
             "thickness_nm": None,
-        }, [f"capping layer thickness is not expressible in nm: {value!r}"]
+            "thickness_text": value,
+        }, [f"capping layer thickness kept as text: {value!r}"]
     return {
         "material": value,
         "thickness_nm": None,
-    }, [f"could not parse capping layer thickness: {value!r}"]
+        "thickness_text": value,
+    }, [f"capping layer kept as text: {value!r}"]
 
 
 def normalize_doi(value: str) -> str:
@@ -204,16 +215,14 @@ def load_metadata(
                 )
                 continue
 
-            thickness_nm, thickness_error = parse_thickness(raw.get("thickness"))
-            if thickness_error:
-                state.skipped_metadata.append(
-                    {
-                        "line": line_number,
-                        "sampleId": sample_id,
-                        "reason": thickness_error,
-                    }
+            thickness_nm, thickness_text = parse_thickness(raw.get("thickness"))
+            if thickness_text is not None:
+                state.thickness_text_rows.append(
+                    {"sampleId": sample_id, "thickness": thickness_text}
                 )
-                continue
+                state.warnings.append(
+                    f"{sample_id}: thickness kept as text: {thickness_text!r}"
+                )
 
             source_doi = normalize_doi(raw.get("source_doi"))
             source_title = clean(raw.get("source_title"))
@@ -266,6 +275,7 @@ def load_metadata(
                 ),
                 deposition_method=optional(raw.get("deposition_method")),
                 thickness_nm=thickness_nm,
+                thickness_text=thickness_text,
                 capping_layer=capping_layer,
             )
     return rows, source_titles
@@ -413,6 +423,7 @@ def create_schema(connection: sqlite3.Connection) -> None:
             number INTEGER NOT NULL,
             source_doi TEXT NOT NULL REFERENCES sources(doi),
             pcm_thickness_nm REAL,
+            pcm_thickness_text TEXT,
             deposition_method_id INTEGER REFERENCES deposition_methods(id),
             UNIQUE (material_id, number)
         );
@@ -420,7 +431,8 @@ def create_schema(connection: sqlite3.Connection) -> None:
         CREATE TABLE capping_layers (
             sample_id TEXT PRIMARY KEY REFERENCES samples(id) ON DELETE CASCADE,
             material TEXT NOT NULL,
-            thickness_nm REAL
+            thickness_nm REAL,
+            thickness_text TEXT
         );
 
         CREATE TABLE refractive_index_datasets (
@@ -560,8 +572,8 @@ def write_database(
                 """
                 INSERT INTO samples (
                     id, material_id, number, source_doi, pcm_thickness_nm,
-                    deposition_method_id
-                ) VALUES (?, ?, ?, ?, ?, ?)
+                    pcm_thickness_text, deposition_method_id
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     sample_id,
@@ -569,6 +581,7 @@ def write_database(
                     row.number,
                     row.source_doi,
                     row.thickness_nm,
+                    row.thickness_text,
                     deposition_ids.get(row.deposition_method),
                 ),
             )
@@ -577,11 +590,16 @@ def write_database(
 
             if row.capping_layer is not None:
                 connection.execute(
-                    "INSERT INTO capping_layers (sample_id, material, thickness_nm) VALUES (?, ?, ?)",
+                    """
+                    INSERT INTO capping_layers (
+                        sample_id, material, thickness_nm, thickness_text
+                    ) VALUES (?, ?, ?, ?)
+                    """,
                     (
                         sample_id,
                         row.capping_layer["material"],
                         row.capping_layer["thickness_nm"],
+                        row.capping_layer["thickness_text"],
                     ),
                 )
 
@@ -736,6 +754,7 @@ def build(data_dir: Path, output: Path, report_path: Path, dry_run: bool = False
         "opticalFilesParsed": parsed_files,
         "skippedMetadata": state.skipped_metadata,
         "skippedFiles": state.skipped_files,
+        "thicknessTextRows": state.thickness_text_rows,
         "warnings": state.warnings,
         "sourceCount": len(source_titles),
     }

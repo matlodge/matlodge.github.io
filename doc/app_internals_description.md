@@ -103,7 +103,7 @@ App
 
 The database is generated from the raw files by [scripts/build_database.py](../scripts/build_database.py). It reads [data/pcms.csv](../data/pcms.csv) and the TSV files under [data/](../data/), applies the import policy, and writes `public/data/matlodge.sqlite` plus `build/db-report.json`.
 
-The schema follows [doc/domain.puml](domain.puml) and contains tables for materials, sources, samples, capping layers, refractive-index datasets, optical data points, phases, extraction methods, measurement methods, fitting models, deposition methods and build information. The current strict import excludes metadata rows with ambiguous thickness values; the generated database currently contains 27 samples, 57 datasets and 118,633 data points.
+The schema follows [doc/domain.puml](domain.puml) and contains tables for materials, sources, samples, capping layers, refractive-index datasets, optical data points, phases, extraction methods, measurement methods, fitting models, deposition methods and build information. Thicknesses that are not a single numeric nm value are kept as text (`samples.pcm_thickness_text`, `capping_layers.thickness_text`) rather than dropping the sample; the generated database currently contains 80 samples, 163 datasets and 233,441 data points.
 
 The database builder is tested by [scripts/test_build_database.py](../scripts/test_build_database.py). It is not part of the browser bundle; it runs in development, CI or the static-host build step.
 

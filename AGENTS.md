@@ -34,9 +34,9 @@ The production site is written to `dist/`. Node 24 is used locally; Vite 7 requi
 
 ## Current expected state
 
-- Database: **27 samples**, **57 datasets**, **118,633 optical points**, about **4.2 MiB**.
-- Materials with optical data: `Ge2Sb2Te5`, `RuSbTe`, `Sb2S3`, `Sb2Se3`.
-- `Sb2S3_2` and `Sb2S3_14` are intentionally excluded because their thickness values are ambiguous.
+- Database: **80 samples**, **163 datasets**, **233,441 optical points**, about **10.8 MiB**.
+- Materials with optical data: 35 formulations, from `Bi2Se3` to `SnGe7Sb2Te7Se4`; the largest groups are `Sb2S3` (17), `Ge2Sb2Te5` (10) and `Sb2Se3` (9).
+- Every metadata row is imported: ambiguous thicknesses (e.g. `100 nm and 1 µm`, `600-750 nm`) keep the original text in `samples.pcm_thickness_text` instead of being rejected.
 - Metadata-only samples are not inserted because the domain model requires each sample to have datasets.
 - The generated database is `public/data/matlodge.sqlite`. It is gitignored and must be regenerated, not hand-edited.
 - The build report is `build/db-report.json`; it is also gitignored and is not served to the browser.
@@ -135,15 +135,15 @@ Important current input quirks:
 - Filenames include `_m_amorph`, `_m_cryst`, `_m_cryst_1`, `_m_cryst_2`, `_m_reamorph`, and the non-`_m` variant `RuSbTe_1_cryst.txt`.
 - The parser ignores trailing empty columns, drops invalid rows, sorts by lambda, and deduplicates wavelengths.
 
-Strict metadata policy:
+Thickness policy:
 
-- Single numeric thickness in nm is imported.
+- A single numeric thickness in nm is stored numerically in `samples.pcm_thickness_nm`.
 - Missing thickness becomes `NULL`.
-- Thickness with two values, a range, µm, or non-nm units causes the metadata row and its optical datasets to be skipped.
-- Current consequence: `Sb2S3_2` and `Sb2S3_14` are excluded; the build report lists them.
+- Anything else (two values, a range, µm, non-nm units) is kept verbatim in `samples.pcm_thickness_text` and the row is still imported together with its optical datasets. Current examples: `Sb2S3_2` → `100 nm and 1 µm`; five Ge–Sn–Sb–Te–Se samples → `600-750 nm`.
+- The report lists these rows in `thicknessTextRows` and in `warnings`, so nothing is dropped silently.
 - `source_model_has_parameters` accepts `available` and the existing typo `avialable` as true.
 - `capping_layer = none` produces no capping-layer row.
-- Unparseable capping thickness keeps the sample and stores the capping material with a `NULL` thickness.
+- A capping layer whose thickness is not a numeric nm value keeps the sample, stores the material, and keeps the original text in `capping_layers.thickness_text` (e.g. `100-atomic-layer Al2O3 film`).
 - Missing optional values are stored as `NULL`, not as text markers.
 
 The schema is defined in [scripts/build_database.py](scripts/build_database.py) and follows [doc/domain.puml](doc/domain.puml). Main tables: `materials`, `sources`, `samples`, `capping_layers`, `refractive_index_datasets`, `optical_data_points`, reference vocabulary tables and `build_info`.

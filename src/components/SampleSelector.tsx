@@ -65,12 +65,19 @@ export function SampleSelector({
             disabled={samplesLoading || samples.length === 0}
           >
             {samples.map((sample) => {
+              const citation = sourceCitation(
+                sample.firstAuthor,
+                sample.publicationYear,
+              );
               const range = formatLambdaRange(
                 commonRange(sample.amorphousRange, sample.crystallineRange),
               );
+              const label = [sample.id, citation, range]
+                .filter((part): part is string => Boolean(part))
+                .join(" · ");
               return (
                 <option key={sample.id} value={sample.id}>
-                  {range ? `${sample.id} · ${range}` : sample.id}
+                  {label}
                 </option>
               );
             })}

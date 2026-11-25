@@ -100,10 +100,11 @@ Key architectural rules:
 
 - The app is one screen; there is no router and no URL state persistence.
 - Material and sample selection use native `<select>` controls, not searchable comboboxes.
-- Each sample option is labelled with its id and the wavelength window shared by
-  its amorphous and crystalline data (e.g. `Sb2S3_8 · 400–900 nm`), which is the
+- Each sample option is labelled with its id, the source citation and the
+  wavelength window shared by its amorphous and crystalline data
+  (e.g. `Sb2S3_2 · Gutiérrez et al. (2022) · 200–1650 nm`), the last being the
   domain used by the Δ plots. Samples without an overlap fall back to the single
-  phase's range; disjoint ranges show the id only.
+  phase's range; disjoint ranges show the id and citation only.
 - A sample can be added only once; the selected-sample limit is 8.
 - Material formulations are shown with Unicode subscript digits (`Ge₂Sb₂Te₅`)
   via `formatFormula`; native `<select>` options cannot hold `<sub>` markup, so

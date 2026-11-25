@@ -80,6 +80,8 @@ class MetadataRow:
     thickness_nm: float | None
     capping_layer: dict[str, str | float | None] | None
     thickness_text: str | None = None
+    first_author: str | None = None
+    publication_year: int | None = None
     warnings: list[str] = field(default_factory=list)
 
 
@@ -175,11 +177,27 @@ def parse_bool(value: str) -> int | None:
     return 1 if value.lower() in TRUE_MARKERS else None
 
 
+def parse_publication_year(
+    value: str, source_doi: str, state: BuildState
+) -> int | None:
+    text = optional(value)
+    if text is None:
+        return None
+    if text.isdigit() and len(text) == 4:
+        return int(text)
+    state.warnings.append(
+        f"source {source_doi}: unparseable publication year {text!r}; storing NULL"
+    )
+    return None
+
+
 def load_metadata(
     path: Path, state: BuildState
 ) -> tuple[OrderedDict[str, MetadataRow], dict[str, str]]:
     rows: OrderedDict[str, MetadataRow] = OrderedDict()
     source_titles: dict[str, str] = {}
+    source_authors: dict[str, str | None] = {}
+    source_years: dict[str, int | None] = {}
     with path.open(newline="", encoding="utf-8-sig") as handle:
         reader = csv.DictReader(handle, delimiter=";")
         for line_number, raw in enumerate(reader, start=2):
@@ -261,6 +279,36 @@ def load_metadata(
             else:
                 source_titles.setdefault(source_doi, source_title)
 
+            first_author = optional(raw.get("first_author"))
+            existing_author = source_authors.get(source_doi)
+            if (
+                existing_author is not None
+                and first_author is not None
+                and existing_author != first_author
+            ):
+                state.warnings.append(
+                    f"source {source_doi}: multiple first authors; keeping the first one"
+                )
+                first_author = existing_author
+            else:
+                source_authors.setdefault(source_doi, first_author)
+
+            publication_year = parse_publication_year(
+                raw.get("publication_year"), source_doi, state
+            )
+            existing_year = source_years.get(source_doi)
+            if (
+                existing_year is not None
+                and publication_year is not None
+                and existing_year != publication_year
+            ):
+                state.warnings.append(
+                    f"source {source_doi}: multiple publication years; keeping the first one"
+                )
+                publication_year = existing_year
+            else:
+                source_years.setdefault(source_doi, publication_year)
+
             rows[sample_id] = MetadataRow(
                 sample_id=sample_id,
                 material=material,
@@ -277,6 +325,8 @@ def load_metadata(
                 thickness_nm=thickness_nm,
                 thickness_text=thickness_text,
                 capping_layer=capping_layer,
+                first_author=source_authors.get(source_doi),
+                publication_year=source_years.get(source_doi),
             )
     return rows, source_titles
 
@@ -388,7 +438,9 @@ def create_schema(connection: sqlite3.Connection) -> None:
         CREATE TABLE sources (
             doi TEXT PRIMARY KEY,
             title TEXT NOT NULL,
-            doi_link TEXT NOT NULL
+            doi_link TEXT NOT NULL,
+            first_author TEXT,
+            publication_year INTEGER
         );
 
         CREATE TABLE phases (
@@ -562,11 +614,17 @@ def write_database(
             assert material_id is not None
             connection.execute(
                 """
-                INSERT INTO sources (doi, title, doi_link)
-                VALUES (?, ?, ?)
+                INSERT INTO sources (doi, title, doi_link, first_author, publication_year)
+                VALUES (?, ?, ?, ?, ?)
                 ON CONFLICT(doi) DO NOTHING
                 """,
-                (row.source_doi, row.source_title, f"https://doi.org/{row.source_doi}"),
+                (
+                    row.source_doi,
+                    row.source_title,
+                    f"https://doi.org/{row.source_doi}",
+                    row.first_author,
+                    row.publication_year,
+                ),
             )
             connection.execute(
                 """

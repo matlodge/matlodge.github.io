@@ -95,8 +95,12 @@ class CurrentDataBuildTests(unittest.TestCase):
                     WHERE d.sample_id = 'Sb2S3_2'
                     """
                 ).fetchone()
+                source = connection.execute(
+                    "SELECT first_author, publication_year FROM sources WHERE doi = '10.1002/adom.202002049'"
+                ).fetchone()
             self.assertEqual(stored, (None, "100 nm and 1 µm"))
             self.assertGreater(points[0], 0)
+            self.assertEqual(source, ("Fang et al.", 2021))
 
 
 class OpticalFileParsingTests(unittest.TestCase):

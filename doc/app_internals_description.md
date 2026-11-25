@@ -80,6 +80,8 @@ App
 
 [src/lib/formula.ts](../src/lib/formula.ts) formats chemical formulations for display by replacing ASCII digits with Unicode subscript digits (`Ge2Sb2Te5` → `Ge₂Sb₂Te₅`). It is used in the material dropdown, the selected-sample chips, the details cards and the comparison note. Stored values remain ASCII; the substitution happens only when rendering, because a native `<select>` option cannot contain `<sub>` markup.
 
+[src/lib/citation.ts](../src/lib/citation.ts) turns the source's `first_author` and `publication_year` into the short citation shown after a publication title (`Fang et al. (2021)`), degrading gracefully when either part is missing. It is used by the selector's source line and by the provenance cards.
+
 [src/types.ts](../src/types.ts) defines the shared TypeScript contracts for materials, samples, datasets, curves, metadata and selected samples.
 
 ### Styling

@@ -1,4 +1,5 @@
 import type { MaterialSummary, SampleSummary } from "../types";
+import { sourceCitation } from "../lib/citation";
 import { formatFormula } from "../lib/formula";
 import { commonRange, formatLambdaRange } from "../lib/units";
 
@@ -86,13 +87,21 @@ export function SampleSelector({
         </button>
       </div>
 
-      {sampleId && (
-        <p className="selected-source">
-          <span>Source</span>
-          {samples.find((sample) => sample.id === sampleId)?.sourceTitle ??
-            "Unknown source"}
-        </p>
-      )}
+      {sampleId && (() => {
+        const selected = samples.find((sample) => sample.id === sampleId);
+        const citation = selected
+          ? sourceCitation(selected.firstAuthor, selected.publicationYear)
+          : null;
+        return (
+          <p className="selected-source">
+            <span className="source-label">Source</span>
+            <span className="source-line-title">
+              {selected?.sourceTitle ?? "Unknown source"}
+            </span>
+            {citation && <span className="source-line-citation">{citation}</span>}
+          </p>
+        );
+      })()}
     </section>
   );
 }

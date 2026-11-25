@@ -13,6 +13,8 @@ export interface SampleSummary {
   number: number;
   sourceDoi: string;
   sourceTitle: string;
+  firstAuthor: string | null;
+  publicationYear: number | null;
   hasAmorphous: boolean;
   hasCrystalline: boolean;
   datasetCount: number;
@@ -59,6 +61,8 @@ export interface SampleMetadata {
   sourceDoi: string;
   sourceTitle: string;
   sourceLink: string;
+  firstAuthor: string | null;
+  publicationYear: number | null;
   pcmThicknessNm: number | null;
   pcmThicknessText: string | null;
   depositionMethod: string | null;

@@ -118,6 +118,10 @@ Key architectural rules:
   logarithmic.
 - X-axis zoom is shared across the four charts; each chart is a separate Plotly instance.
 - The sample details cards show source DOI/title, extraction method, measurement method, fitting model, parameter availability, deposition method, thickness and capping layer.
+- The source line under the selector shows the publication title followed by the
+  first author and year (`Title · Fang et al. (2021)`); the details cards repeat
+  the same citation after their title. Both come from the `first_author` and
+  `publication_year` CSV columns, stored per DOI in the `sources` table.
 - The footer carries the funding acknowledgment: "Proyecto PID2025-169188NA-I00
   financiado por" followed by `public/miciu-aei.jpg` (a downscaled derivative of
   the original MICIU/AEI logo; do not ship the full-resolution source).

@@ -294,17 +294,33 @@ h3 {
 }
 
 .selected-source {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   max-width: 100%;
   margin: 14px 0 0;
   overflow: hidden;
   color: var(--muted);
   font-size: 0.78rem;
+}
+
+.source-line-title {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.source-line-citation {
+  flex: none;
+  color: var(--ink-soft);
+  font-weight: 650;
   white-space: nowrap;
 }
 
-.selected-source span {
-  margin-right: 8px;
+.selected-source .source-label {
+  flex: none;
   color: var(--ink-soft);
   font-weight: 750;
   text-transform: uppercase;
@@ -914,6 +930,14 @@ h3 {
 
   .brand-subtitle {
     font-size: 0.8rem;
+  }
+
+  .selected-source {
+    flex-wrap: wrap;
+  }
+
+  .source-line-title {
+    flex-basis: 100%;
   }
 
   .header-stats {

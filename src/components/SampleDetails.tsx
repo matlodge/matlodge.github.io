@@ -1,4 +1,5 @@
 import type { DatasetSummary, SelectedSample } from "../types";
+import { sourceCitation } from "../lib/citation";
 import { formatFormula } from "../lib/formula";
 
 interface SampleDetailsProps {
@@ -97,7 +98,16 @@ export function SampleDetails({ selected }: SampleDetailsProps) {
                 </div>
               </div>
 
-              <p className="source-title">{sample.bundle.sample.sourceTitle}</p>
+              <p className="source-title">
+                {sample.bundle.sample.sourceTitle}
+                {(() => {
+                  const citation = sourceCitation(
+                    sample.bundle.sample.firstAuthor,
+                    sample.bundle.sample.publicationYear,
+                  );
+                  return citation ? ` · ${citation}` : null;
+                })()}
+              </p>
               <a
                 className="doi-link"
                 href={sample.bundle.sample.sourceLink}

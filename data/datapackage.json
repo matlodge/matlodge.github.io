@@ -135,6 +135,18 @@
             "title": "Capping layer",
             "type": "string",
             "description": "Capping layer as reported, for example '10 nm ITO' or '3 nm Al2O3'. The value 'none' means that the sample has no capping layer."
+          },
+          {
+            "name": "first_author",
+            "title": "First author",
+            "type": "string",
+            "description": "First author of the source publication, for example 'Fang et al.'."
+          },
+          {
+            "name": "publication_year",
+            "title": "Publication year",
+            "type": "integer",
+            "description": "Year the source publication appeared."
           }
         ]
       }

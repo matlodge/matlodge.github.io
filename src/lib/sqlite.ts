@@ -111,6 +111,8 @@ export async function fetchSamples(materialId: number): Promise<SampleSummary[]>
     number: number;
     source_doi: string;
     source_title: string;
+    first_author: string | null;
+    publication_year: number | null;
     has_amorphous: number;
     has_crystalline: number;
     dataset_count: number;
@@ -128,6 +130,8 @@ export async function fetchSamples(materialId: number): Promise<SampleSummary[]>
         s.number,
         s.source_doi,
         src.title AS source_title,
+        src.first_author,
+        src.publication_year,
         EXISTS(
           SELECT 1
           FROM refractive_index_datasets d
@@ -187,6 +191,8 @@ export async function fetchSamples(materialId: number): Promise<SampleSummary[]>
     number: asNumber(row.number),
     sourceDoi: String(row.source_doi),
     sourceTitle: String(row.source_title),
+    firstAuthor: asNullableString(row.first_author),
+    publicationYear: asNullableNumber(row.publication_year),
     hasAmorphous: Boolean(row.has_amorphous),
     hasCrystalline: Boolean(row.has_crystalline),
     datasetCount: asNumber(row.dataset_count),
@@ -271,6 +277,8 @@ export async function fetchSampleBundle(sampleId: string): Promise<SampleBundle>
     source_doi: string;
     source_title: string;
     source_link: string;
+    first_author: string | null;
+    publication_year: number | null;
     pcm_thickness_nm: number | null;
     pcm_thickness_text: string | null;
     deposition_method: string | null;
@@ -287,6 +295,8 @@ export async function fetchSampleBundle(sampleId: string): Promise<SampleBundle>
         s.source_doi,
         src.title AS source_title,
         src.doi_link AS source_link,
+        src.first_author,
+        src.publication_year,
         s.pcm_thickness_nm,
         s.pcm_thickness_text,
         dm.name AS deposition_method,
@@ -313,6 +323,8 @@ export async function fetchSampleBundle(sampleId: string): Promise<SampleBundle>
     sourceDoi: String(row.source_doi),
     sourceTitle: String(row.source_title),
     sourceLink: String(row.source_link),
+    firstAuthor: asNullableString(row.first_author),
+    publicationYear: asNullableNumber(row.publication_year),
     pcmThicknessNm: asNullableNumber(row.pcm_thickness_nm),
     pcmThicknessText: asNullableString(row.pcm_thickness_text),
     depositionMethod: asNullableString(row.deposition_method),

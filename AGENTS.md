@@ -94,6 +94,7 @@ Key architectural rules:
 | [data/](data/) | Raw metadata and TSV optical files |
 | [doc/domain.puml](doc/domain.puml) | Domain model |
 | [.github/workflows/deploy.yml](.github/workflows/deploy.yml) | GitHub Pages build/deploy workflow |
+| [public/miciu-aei.jpg](public/miciu-aei.jpg) | Funding logos (MICIU + AEI) shown in the site footer |
 
 ## Frontend behavior
 
@@ -117,6 +118,9 @@ Key architectural rules:
   logarithmic.
 - X-axis zoom is shared across the four charts; each chart is a separate Plotly instance.
 - The sample details cards show source DOI/title, extraction method, measurement method, fitting model, parameter availability, deposition method, thickness and capping layer.
+- The footer carries the funding acknowledgment: "Proyecto PID2025-169188NA-I00
+  financiado por" followed by `public/miciu-aei.jpg` (a downscaled derivative of
+  the original MICIU/AEI logo; do not ship the full-resolution source).
 - Additional crystalline or reamorphized datasets are stored and noted in the details card, but the plots use the canonical pair: base amorphous and base crystalline, falling back to `_cryst_1` when no base crystalline file exists.
 
 ## Data pipeline

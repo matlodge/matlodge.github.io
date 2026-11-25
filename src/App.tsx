@@ -289,14 +289,16 @@ export default function App() {
       </main>
 
       <footer className="site-footer">
-        <p>
-          Matlodge · phase-change material optical properties. Source databases
-          are cited in each sample card.
+        <p className="funding-note">
+          Proyecto PID2025-169188NA-I00 financiado por
         </p>
-        <p>
-          Data is served as a same-origin SQLite file and queried locally with
-          SQLite-WASM.
-        </p>
+        <img
+          className="funding-logo"
+          src={`${import.meta.env.BASE_URL}miciu-aei.jpg`}
+          alt="Ministerio de Ciencia, Innovación y Universidades y Agencia Estatal de Investigación"
+          width={1200}
+          height={294}
+        />
       </footer>
     </div>
   );
